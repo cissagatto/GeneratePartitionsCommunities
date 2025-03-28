@@ -1,9 +1,0 @@
-Config, Value
-Dataset_Path, ~/Generate-Partitions-Communities/dataset
-Temporary_Path, /dev/shm/ro-GpositiveGO
-Graph_Path, ~/Generate-Partitions-Communities/Label-Graphs/rogers
-Similarity, rogers
-Dataset_Name, GpositiveGO
-Number_Dataset, 41
-Number_Folds, 10
-Number_Cores, 1

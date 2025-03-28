@@ -1,0 +1,12 @@
+Config, Value
+Dataset_Path, ~/Generate-Partitions-Communities/dataset
+Temporary_Path, /tmp/j-emotions
+Graph_Path, ~/Generate-Partitions-Communities/Label-Graphs
+Similarity, jaccard
+Sparsification, 1
+Dataset_Name, emotions
+Number_Dataset, 26
+Number_Folds, 10
+Number_Cores, 1
+R_clone, 0
+Save_csv_files, 1

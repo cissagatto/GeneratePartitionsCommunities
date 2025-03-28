@@ -1,20 +1,39 @@
 # Generate Partitions Communities
-This code is part of my doctoral research. The aim is build the graphs and apply communities detection methods to get the hybrid partitions.
+This repository contains the code developed as part of the author's doctoral research. 
 
 
-## Scripts
-This source code consists of an R project for R Studio and the following R scripts:
 
-1. libraries.R
-2. utils.R
-3. functions.R
-4. communities.R
-5. run.R
-6. gpc.R
-7. config-files.R
+## 🎯 Project Goal
+The focus of the project is to apply community detection algorithms to identify different structures in the graph. The main goal is to apply community detection methods to generate hybrid partitions to be used in multilabel classification.
 
 
-## Preparing your experiment
+## 🎓 How to Cite This Repository
+
+If you use this code in your work or research, please cite the repository as follows:
+
+    Gatto, E. C. (2025). Generate Partitions Communities [GitHub Repository]. Retrieved from https://github.com/cissagatto/Generate-Partitions-Communities
+
+## 🔑 Main Features
+
+Here are the main features of this project:
+- Apply sparcifications methods in to the builted graphs from this code https://github.com/cissagatto/GraphMultiLabel
+- Apply Community detection methods
+- Finding Hybrid partitions in those communities 
+
+## ⚙️ Code Structure
+This repository contains the following main scripts:
+- libraries.R: Loads the necessary libraries to run the code.
+- utils.R: Helper and preprocessing functions.
+- functions.R: Functions for running community detection methods and sparcifications
+- communities.R: calls communities detections methods and sparcifications
+- run.R: Functions to run experiments and apply community detections.
+- gpc.R: script for running experiments.
+- config-files.R: Configuration file for parameters.
+
+_Important: choose the best method and hybrid partitions is under review (choose.R)_
+
+
+## 📝 Preparing Your Experiment
 
 ### STEP 1
 A file called _datasets-original.csv_ must be in the *root project directory*. This file is used to read information about the datasets and they are used in the code. We have 90 multilabel datasets in this _.csv_ file. If you want to use another dataset, please, add the following information about the dataset in the file:
@@ -80,23 +99,28 @@ To run this code you will need a configuration file saved in *csv* format and wi
 | Temporary_Path  | Absolute path to the directory where temporary processing will be performed * 1  |
 | Graph_Path      | Absolute path to the directory where the graphs are                              |
 | Similarity      | Must be "jaccard", "rogers" or another similarity measure                        |
+| Sparsification  | 1 to run with sparsification, 0 to not apply sparcification. (no self loops)     |
 | Dataset_Name    | Dataset name according to *dataset-original.csv* file                            |
 | Number_Dataset  | Dataset number according to *dataset-original.csv* file                          |
 | Number_Folds    | Number of folds used in cross validation                                         |
 | Number_Cores    | Number of cores for parallel processing                                          |
+| R_clone 	      | 1 to upload the results for cloud, 0 otherwise                                   |
+| Save_csv_files 	| 1 to save csv files                                                              |
 
 
 1 - Use directorys like */dev/shm*, *tmp* or *scratch* here.
+
+*IMPORTANT*: knn = 1 and threshold = 0 are the graph without self loops.
 
 
 You can save configuration files wherever you want. The absolute path will be passed as a command line argument.
 
 
 
-## Software Requirements
+## 🖥️ Software Requirements
 This code was develop in RStudio Version 1.4.1106 © 2009-2021 RStudio, PBC "Tiger Daylily" (2389bc24, 2021-02-11) for Ubuntu Bionic Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) QtWebEngine/5.12.8 Chrome/69.0.3497.128 Safari/537.36. The R Language version was: R version 4.1.0 (2021-05-18) -- "Camp Pontanezen" Copyright (C) 2021 The R Foundation for Statistical Computing Platform: x86_64-pc-linux-gnu (64-bit).
 
-## Hardware Requirements
+## 💻 Hardware Requirements
 This code may or may not be executed in parallel, however, it is highly recommended that you run it in parallel. The number of cores can be configured via the command line (number_cores). If number_cores = 1 the code will run sequentially. In our experiments, we used 10 cores. For reproducibility, we recommend that you also use ten cores. This code was tested with the birds dataset in the following machine:
 
 *System:*
@@ -111,7 +135,7 @@ Then the experiment was executed in a cluster at UFSCar.
 
 
 ## RUN
-To run the code, open the terminal, enter the *~/Generate-Partitions-Communities/R* folder, and type
+To run the code, open the terminal, enter the *~/Generate-Partitions-Communities/example* folder, and type
 
 ```
 Rscript gpc.R [absolute_path_to_config_file]
@@ -120,18 +144,18 @@ Rscript gpc.R [absolute_path_to_config_file]
 Example:
 
 ```
-Rscript gpc.R "~/Generate-Partitions-Communities/config-files/jaccard/mj-GpositiveGO.csv"
+Rscript gpc.R "~/Generate-Partitions-Communities/config-files/j-GpositiveGO.csv"
 ```
 
-## Acknowledgment
+## 🙏 Acknowledgments
 - This study was financed in part by the Coordenação de Aperfeiçoamento de Pessoal de Nível Superior - Brasil (CAPES) - Finance Code 001.
 - This study was financed in part by the Conselho Nacional de Desenvolvimento Científico e Tecnológico - Brasil (CNPQ) - Process number 200371/2022-3.
 - The authors also thank the Brazilian research agencies FAPESP financial support.
 
-# Contact
+# 📧 Contact
 elainececiliagatto@gmail.com
 
-## Links
+# 🌐 Links
 
 | [Site](https://sites.google.com/view/professor-cissa-gatto) | [Post-Graduate Program in Computer Science](http://ppgcc.dc.ufscar.br/pt-br) | [Computer Department](https://site.dc.ufscar.br/) |  [Biomal](http://www.biomal.ufscar.br/) | [CNPQ](https://www.gov.br/cnpq/pt-br) | [Ku Leuven](https://kulak.kuleuven.be/) | [Embarcados](https://www.embarcados.com.br/author/cissa/) | [Read Prensa](https://prensa.li/@cissa.gatto/) | [Linkedin Company](https://www.linkedin.com/company/27241216) | [Linkedin Profile](https://www.linkedin.com/in/elainececiliagatto/) | [Instagram](https://www.instagram.com/cissagatto) | [Facebook](https://www.facebook.com/cissagatto) | [Twitter](https://twitter.com/cissagatto) | [Twitch](https://www.twitch.tv/cissagatto) | [Youtube](https://www.youtube.com/CissaGatto) |
 
