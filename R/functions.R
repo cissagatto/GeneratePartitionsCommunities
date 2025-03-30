@@ -16,15 +16,15 @@
 # Federal University of Lavras (UFLA) Campus Lavras - Minas Gerais            #
 # Applied Computer Department (DAC)                                           #
 #                                                                             #
-# Prof. Dr. Ricardo Cerri         
+# Prof. Dr. Ricardo Cerri
 # State University of São Paulo Campus São Carlos
 #                                                                             #
-# Prof. Dr. Mauri Ferrandin 
+# Prof. Dr. Mauri Ferrandin
 # Federal University of Santa Catarina Campus Blumenau
 #                                                                             #
 # Prof. Dr. Alan Demetrius                                                    #
 # Federal University of Sao Carlos (UFSCar) Campus Sao Carlos - São Paulo     #
-# Computer Department (DC)                                                    # 
+# Computer Department (DC)                                                    #
 #
 ###############################################################################
 
@@ -32,23 +32,23 @@
 ##################################################################################################
 # Configures the workspace according to the operating system                                     #
 ##################################################################################################
-FolderRoot = "~/Generate-Partitions-Communities"
-FolderScripts = "~/Generate-Partitions-Communities/R"
+FolderRoot = "~/GeneratePartitionsCommunities"
+FolderScripts = "~/GeneratePartitionsCommunities/R"
 
 
 
 #' Run a Community Detection Method
 #'
-#' This function executes a specified community detection algorithm on a given graph 
+#' This function executes a specified community detection algorithm on a given graph
 #' and measures its execution time.
 #'
-#' @param method_function A function that performs a community detection algorithm. 
+#' @param method_function A function that performs a community detection algorithm.
 #'        It should accept `parameters`, `graph`, `title`, `fold`, and `Save` as arguments.
 #' @param parameters A list of parameters required for the community detection method.
 #'        It should contain at least the `FolderSplit` path where results will be saved.
-#' @param graph An `igraph` object representing the network structure on which 
+#' @param graph An `igraph` object representing the network structure on which
 #'        the community detection method will be applied.
-#' @param fold An integer indicating the current fold number in a cross-validation 
+#' @param fold An integer indicating the current fold number in a cross-validation
 #'        or iterative process.
 #'
 #' @return A numeric vector of length 3 containing execution time statistics:
@@ -65,8 +65,8 @@ FolderScripts = "~/Generate-Partitions-Communities/R"
 #' }
 #'
 #' @export
-run_community_method <- function(method_function, 
-                                 parameters, graph, 
+run_community_method <- function(method_function,
+                                 parameters, graph,
                                  title, fold) {
   # Start the timer and execute the method
   result <- system.time({
@@ -78,10 +78,10 @@ run_community_method <- function(method_function,
       Save = parameters$FolderSplit
     )
   })
-  
+
   # Attach execution time to the result
   method_result$execution_time <- result
-  
+
   # Return the result of the community detection method
   return(method_result)
 }
@@ -109,7 +109,7 @@ plotGraph <- function(community, graph, title) {
        vertex.label.color = "black", vertex.label.cex = 0.7,
        vertex.label.family = "Times", vertex.label.font = 2,
        edge.color = "gray", edge.width = 0.5)
-  
+
   # Add title to the plot
   title(cex.main = 0.8, main = title)
 }
@@ -132,7 +132,7 @@ plotGraph <- function(community, graph, title) {
 #' verifyPartition(parameters, size = 3, vertices = 10)
 verifyPartition <- function(parameters, size, vertices) {
   retorno <- list()
-  
+
   if (size == 1) {
     retorno$numberComm <- 1
     retorno$partition <- "global"
@@ -143,7 +143,7 @@ verifyPartition <- function(parameters, size, vertices) {
     retorno$size <- size
     retorno$partition <- "hybrid"
   }
-  
+
   return(retorno)
   gc()  # Perform garbage collection
 }
@@ -165,7 +165,7 @@ verifyPartition <- function(parameters, size, vertices) {
 #' str(df)
 createDF <- function() {
   retorno <- list()
-  
+
   # Initialize data frame for general community information
   infoComm_final <- data.frame(
     split = numeric(0),
@@ -177,7 +177,7 @@ createDF <- function() {
     modularity = numeric(0),
     stringsAsFactors = FALSE
   )
-  
+
   # Initialize data frame for community membership information
   communities_final <- data.frame(
     split = numeric(0),
@@ -189,7 +189,7 @@ createDF <- function() {
     groups = numeric(0),
     stringsAsFactors = FALSE
   )
-  
+
   retorno$infoComm_final <- infoComm_final
   retorno$communities_final <- communities_final
   return(retorno)
@@ -199,7 +199,7 @@ createDF <- function() {
 
 #' Perform Hierarchical Partition Analysis
 #'
-#' This function evaluates whether a given community structure exhibits a hierarchical organization. 
+#' This function evaluates whether a given community structure exhibits a hierarchical organization.
 #' If the structure is hierarchical, it generates a dendrogram visualization and hierarchical partition data.
 #'
 #' The function categorizes the hierarchy level as follows:
@@ -227,7 +227,7 @@ createDF <- function() {
 #' # Example usage:
 #' result <- hierarchicalPartition(comm, "example", "example_output", "./output")
 #' print(result$h_level)
-#' 
+#'
 #' if (!is.null(result$partitions)) {
 #'   print(head(result$partitions))
 #' }
@@ -235,54 +235,54 @@ createDF <- function() {
 #' @export
 hierarchicalPartition <- function(comm, string1, string2, Save) {
   set.seed(123)
-  
+
   # Check if the community structure is hierarchical
   if (is_hierarchical(comm)) {
     num_merges <- nrow(comm$merges)
     labels <- comm$names
-    
+
     if (num_merges == 1) {
       cat("\nNumber of merges is 1. Cutting is not possible.")
-      return(list(h_level = 1, 
-                  hybrid.partition = "no", 
+      return(list(h_level = 1,
+                  hybrid.partition = "no",
                   partitions = NULL))
-      
+
     } else if (num_merges < 1) {
       cat("\nNumber of merges is 0. Cutting is not possible.")
-      return(list(h_level = 0,  
-                  hybrid.partition = "no", 
+      return(list(h_level = 0,
+                  hybrid.partition = "no",
                   partitions = NULL))
-      
+
     } else {
       # Generate and save the dendrogram plot
       pdf(file = paste0(Save, "/", string1, "-dendro.pdf"), width = 10, height = 8)
       print(plot_dendrogram(comm))
       dev.off()
       cat("\nDendrogram saved.\n")
-      
+
       # Create a dataframe to store partition information
       partitions <- data.frame(labels, cut = numeric(length(labels)))
-      
+
       # Generate hierarchical partitions
       for (k in 1:comm$vcount) {
         cat("\nProcessing partition =", k)
         partitions[paste("partition", k, sep = "")] <- cut_at(comm, k)
       }
-      
+
       # Remove the initial placeholder column
       partitions <- partitions[, -2]
-      
+
       # Save partition data to a CSV file
       write.csv(partitions, paste0(Save, "/", string2, "-hierarchical.csv"), row.names = FALSE)
-      
-      return(list(h_level = 2,  
+
+      return(list(h_level = 2,
                   hybrid.partition = "yes",
                   partitions = partitions))  # Return hierarchy level and partitions
     }
   } else {
     cat("\nNot Hierarchical!\n")
-    return(list(h_level = 3,  
-                hybrid.partition = "no", 
+    return(list(h_level = 3,
+                hybrid.partition = "no",
                 partitions = NULL))
   }
 }
@@ -290,8 +290,8 @@ hierarchicalPartition <- function(comm, string1, string2, Save) {
 
 #' Process Community Detection Results
 #'
-#' This function processes the results of a community detection algorithm by extracting information 
-#' about the detected communities, determining the partition type, and generating hierarchical partitions. 
+#' This function processes the results of a community detection algorithm by extracting information
+#' about the detected communities, determining the partition type, and generating hierarchical partitions.
 #' It also saves a dendrogram plot and a CSV file with the partition data.
 #'
 #' @param parameters A list containing:
@@ -300,7 +300,7 @@ hierarchicalPartition <- function(comm, string1, string2, Save) {
 #'   - `parameters`: A list of additional parameters for processing (e.g., sparsification settings).
 #'   - `graph`: The original graph object used for community detection.
 #'   - `title`: A string used as a prefix for output file names.
-#'   - `fold`: A string representing the number fold data 
+#'   - `fold`: A string representing the number fold data
 #'   - `Save`: The directory path where output files will be saved.
 #'
 #' @return A list containing:
@@ -331,20 +331,20 @@ hierarchicalPartition <- function(comm, string1, string2, Save) {
 #' print(result$info.communities)
 #' print(result$resulting.partitions)
 processCommunityDetection <- function(parameters) {
-  
+
   # parameters = parameters
   result = list()
   df = createDF()
-  
+
 #   parameters$community_structure = wt
-  
+
   ######################################################################
   # Obtém o número de comunidades e determina o tipo de partição
   size <- sizes(parameters$community_structure)
   size <- as.numeric(length(size))
   partition <- verifyPartition(parameters$parameters, size, as.numeric(parameters$community_structure$vcount))
   partition  <-  toString(partition$partition)
-  
+
   ######################################################################
   # Calculando a modularidade com tratamento de erro
   modularity_value <- tryCatch({
@@ -357,43 +357,43 @@ processCommunityDetection <- function(parameters) {
     cat("Erro ao calcular modularidade:", e$message, "\n")
     0  # Retorna 0 em caso de erro
   })
-  
-  
+
+
   ######################################################################
   hierarchical = is_hierarchical(parameters$community_structure)
   labels = parameters$community_structure$names
   clusters = parameters$community_structure$membership
-  partition.data = data.frame(labels = labels, 
+  partition.data = data.frame(labels = labels,
                               clusters = clusters)
-  
+
   ######################################################################
   # Retorna os resultados organizados
   if(hierarchical == FALSE){
     result$resulting.partitions = partition.data
-    
+
     ######################################################################
     # Gera partições hierárquicas
-    filename1 = paste(parameters$Save, "/", parameters$title, 
-                      "-", parameters$method, "-partition.csv", 
+    filename1 = paste(parameters$Save, "/", parameters$title,
+                      "-", parameters$method, "-partition.csv",
                       sep = "")
     write.csv(partition.data, filename1, row.names = FALSE)
-    
-    
+
+
   } else {
     ######################################################################
     # Gera partições hierárquicas
     filename1 = paste(parameters$title, "-", parameters$method, sep = "")
     filename2 = paste(parameters$title, "-", parameters$method, "-partitions", sep = "")
-    partition.data = hierarchicalPartition(comm = parameters$community_structure, 
-                                           string1 = filename1, 
-                                           string2 = filename2, 
+    partition.data = hierarchicalPartition(comm = parameters$community_structure,
+                                           string1 = filename1,
+                                           string2 = filename2,
                                            Save = parameters$Save)
     result$resulting.partitions = partition.data
   }
-  
+
     ######################################################################
   # Armazena informações sobre a comunidade no dataframe `communityInfo`
-  df$infoComm_final = rbind(df$infoComm_final, 
+  df$infoComm_final = rbind(df$infoComm_final,
                            data.frame(split = parameters$fold,
                                       sparsification = parameters$title,
                                       method = parameters$method,
@@ -401,7 +401,7 @@ processCommunityDetection <- function(parameters) {
                                       type.community = partition,
                                       numberComm = size,
                                       modularity = modularity_value))
-  
+
   ######################################################################
   # Armazena estrutura detalhada das comunidades no dataframe `communities`
   df$communities_final = rbind(df$communities_final, data.frame(split = parameters$fold,
@@ -411,7 +411,7 @@ processCommunityDetection <- function(parameters) {
                                                     type.community = partition,
                                                     labels = labels,
                                                     groups = clusters))
-  
+
   ######################################################################
   # Salva o gráfico das comunidades detectadas
   pdf(paste(parameters$Save, "/", parameters$title, "-", parameters$method, ".pdf", sep = ""), width = 10, height = 8)
@@ -420,7 +420,7 @@ processCommunityDetection <- function(parameters) {
 
   result$original.communities = df$communities_final
   result$info.communities = df$infoComm_final
-  
+
   return(result)
 }
 
@@ -443,8 +443,8 @@ processCommunityDetection <- function(parameters) {
 #'   - `resulting.partitions`: A list containing hierarchical partitioning results.
 #'
 #' @details
-#' The Spin Glass algorithm is used for community detection in complex networks.  
-#' Once the algorithm is executed, the results are processed by `processCommunityDetection()`,  
+#' The Spin Glass algorithm is used for community detection in complex networks.
+#' Once the algorithm is executed, the results are processed by `processCommunityDetection()`,
 #' which organizes the information, saves data to files, and generates visualizations.
 #'
 #' @export
@@ -461,27 +461,27 @@ processCommunityDetection <- function(parameters) {
 #' print(result$info.communities)
 #' print(result$resulting.partitions)
 executeSpinGlass <- function(parameters) {
-  
+
   # parameters = parameters
-  
+
   cat("\n #-------------------------------------------#")
   cat("\n # SPIN GLASS COMMUNITY DETECTION")
   cat("\n #-------------------------------------------# \n")
-  
+
   sg <- cluster_spinglass(parameters$graph, weights = parameters$weights)
-  
+
   parameters$community_structure <- sg
   parameters$method <- "SpinGlass"
   res <- processCommunityDetection(parameters)
-  
+
   return(res)
 }
 
 
 #' Execute Edge Betweenness Community Detection
 #'
-#' This function applies the Edge Betweenness community detection algorithm to a graph  
-#' and processes the results, including modularity, hierarchical structure, and community assignments.  
+#' This function applies the Edge Betweenness community detection algorithm to a graph
+#' and processes the results, including modularity, hierarchical structure, and community assignments.
 #' The function also generates and saves hierarchical partitions and dendrograms in the specified output folder.
 #'
 #' @param parameters A list containing:
@@ -497,13 +497,13 @@ executeSpinGlass <- function(parameters) {
 #'   - `resulting.partitions`: A list containing hierarchical partitioning results.
 #'
 #' @details
-#' The Edge Betweenness algorithm detects communities by iteratively removing edges  
-#' with the highest betweenness centrality. Once the algorithm is executed,  
-#' the results are processed by `processCommunityDetection()`, which organizes the data,  
+#' The Edge Betweenness algorithm detects communities by iteratively removing edges
+#' with the highest betweenness centrality. Once the algorithm is executed,
+#' the results are processed by `processCommunityDetection()`, which organizes the data,
 #' saves results to files, and generates visualizations.
 #'
-#' @references 
-#' - Girvan, M., & Newman, M. E. (2002). Community structure in social and biological networks.  
+#' @references
+#' - Girvan, M., & Newman, M. E. (2002). Community structure in social and biological networks.
 #'   *Proceedings of the National Academy of Sciences, 99(12), 7821-7826.*
 #'
 #' @export
@@ -520,31 +520,31 @@ executeSpinGlass <- function(parameters) {
 #' print(result$info.communities)
 #' print(result$resulting.partitions)
 executeEdgeBetweenness <- function(parameters) {
-  
+
   cat("\n #-------------------------------------------#")
   cat("\n # EDGE BETWEENNESS COMMUNITY DETECTION")
   cat("\n #-------------------------------------------# \n")
-  
+
   eb <- cluster_edge_betweenness(parameters$graph,
-                                 weights = parameters$weights,  
+                                 weights = parameters$weights,
                                  edge.betweenness = TRUE,
                                  merges = TRUE,
                                  bridges = TRUE,
                                  modularity = TRUE,
                                  membership = TRUE)
-  
+
   parameters$community_structure <- eb
   parameters$method <- "EdgeBetweenness"
   res <- processCommunityDetection(parameters)
-  
-  
+
+
   return(res)
 }
 
 #' Execute Fast Greedy Community Detection
 #'
-#' This function applies the Fast Greedy community detection algorithm to a graph,  
-#' calculates modularity, and processes the results, including community membership and hierarchical structure.  
+#' This function applies the Fast Greedy community detection algorithm to a graph,
+#' calculates modularity, and processes the results, including community membership and hierarchical structure.
 #' The function also generates and saves hierarchical partitions and dendrograms in the specified output folder.
 #'
 #' @param parameters A list containing:
@@ -560,13 +560,13 @@ executeEdgeBetweenness <- function(parameters) {
 #'   - `resulting.partitions`: A list containing hierarchical partitioning results.
 #'
 #' @details
-#' The Fast Greedy algorithm detects communities by greedily optimizing modularity  
-#' in a hierarchical manner. Once the algorithm is executed,  
-#' the results are processed by `processCommunityDetection()`,  
+#' The Fast Greedy algorithm detects communities by greedily optimizing modularity
+#' in a hierarchical manner. Once the algorithm is executed,
+#' the results are processed by `processCommunityDetection()`,
 #' which organizes the data, saves results to files, and generates visualizations.
 #'
-#' @references 
-#' - Clauset, A., Newman, M. E., & Moore, C. (2004). Finding community structure in very large networks.  
+#' @references
+#' - Clauset, A., Newman, M. E., & Moore, C. (2004). Finding community structure in very large networks.
 #'   *Physical Review E, 70(6), 066111.*
 #'
 #' @export
@@ -583,26 +583,26 @@ executeEdgeBetweenness <- function(parameters) {
 #' print(result$info.communities)
 #' print(result$resulting.partitions)
 executeFastGreedy <- function(parameters) {
-  
+
   cat("\n #-------------------------------------------#")
   cat("\n # FAST GREEDY COMMUNITY DETECTION")
   cat("\n #-------------------------------------------# \n")
-  
+
   ######################################################################
   # Simplify the graph by removing loops and multiple edges
   g <- simplify(parameters$graph)
-  
+
   # Apply the Fast Greedy clustering algorithm
   fg <- cluster_fast_greedy(g,
                             merges = TRUE,
                             modularity = TRUE,
                             membership = TRUE,
-                            weights = parameters$weights)  
-  
+                            weights = parameters$weights)
+
   parameters$community_structure <- fg
   parameters$method <- "FastGreedy"
   res <- processCommunityDetection(parameters)
-  
+
   return(res)
 }
 
@@ -611,8 +611,8 @@ executeFastGreedy <- function(parameters) {
 # InfoMap  -------------------------------------------------------------
 #' Execute InfoMap Community Detection
 #'
-#' This function applies the InfoMap community detection algorithm to a graph, calculates modularity, 
-#' and processes the results, including community membership and hierarchical structure. The function also 
+#' This function applies the InfoMap community detection algorithm to a graph, calculates modularity,
+#' and processes the results, including community membership and hierarchical structure. The function also
 #' generates and saves hierarchical partitions, dendrograms, and community structure in the specified output folder.
 #'
 #' @param parameters A list containing:
@@ -628,12 +628,12 @@ executeFastGreedy <- function(parameters) {
 #'   - `resulting.partitions`: A list containing hierarchical partitioning results.
 #'
 #' @details
-#' The InfoMap algorithm identifies community structure in complex networks by minimizing the description 
-#' length of a random walk process. Once the algorithm is executed, the results are processed by `processCommunityDetection()`, 
+#' The InfoMap algorithm identifies community structure in complex networks by minimizing the description
+#' length of a random walk process. Once the algorithm is executed, the results are processed by `processCommunityDetection()`,
 #' which organizes the data, saves results to files, and generates visualizations.
 #'
-#' @references 
-#' - Rosvall, M., & Bergstrom, C. T. (2008). Maps of random walks on complex networks reveal community structure.  
+#' @references
+#' - Rosvall, M., & Bergstrom, C. T. (2008). Maps of random walks on complex networks reveal community structure.
 #'   *Proceedings of the National Academy of Sciences, 105(4), 1118-1123.*
 #'
 #' @export
@@ -651,20 +651,20 @@ executeFastGreedy <- function(parameters) {
 #' print(result$info.communities)
 #' print(result$resulting.partitions)
 executeInfoMap <- function(parameters){
-  
+
   cat("\n #-------------------------------------------#")
   cat("\n # INFO MAP COMMUNITY DETECTION")
   cat("\n #-------------------------------------------# \n")
-  
-  im <- cluster_infomap(parameters$graph, 
-                        e.weights = parameters$weights,  
-                        nb.trials = 10, 
+
+  im <- cluster_infomap(parameters$graph,
+                        e.weights = parameters$weights,
+                        nb.trials = 10,
                         modularity = TRUE)
-  
+
   parameters$community_structure <- im
   parameters$method <- "InfoMap"
   res <- processCommunityDetection(parameters)
-  
+
   return(res)
 }
 
@@ -674,8 +674,8 @@ executeInfoMap <- function(parameters){
 # Label Propagation -------------------------------------------------------------
 #' Execute Label Propagation Community Detection
 #'
-#' This function applies the Label Propagation community detection algorithm to a graph, calculates modularity, 
-#' and processes the results, including community membership and hierarchical structure. The function also 
+#' This function applies the Label Propagation community detection algorithm to a graph, calculates modularity,
+#' and processes the results, including community membership and hierarchical structure. The function also
 #' generates and saves hierarchical partitions, dendrograms, and community structure in the specified output folder.
 #'
 #' @param parameters A list containing:
@@ -693,11 +693,11 @@ executeInfoMap <- function(parameters){
 #' @details
 #' The Label Propagation algorithm identifies communities by propagating labels through the graph. Each node is assigned
 #' a label initially, and in each iteration, a node adopts the most frequent label of its neighbors. The process stops when
-#' the labels stabilize. Once the algorithm is executed, the results are processed by `processCommunityDetection()`, 
+#' the labels stabilize. Once the algorithm is executed, the results are processed by `processCommunityDetection()`,
 #' which organizes the data, saves results to files, and generates visualizations.
 #'
-#' @references 
-#' - Raghavan, U. N., Albert, R., & Kumara, S. (2007). Near linear time algorithm to detect community structures in large-scale networks.  
+#' @references
+#' - Raghavan, U. N., Albert, R., & Kumara, S. (2007). Near linear time algorithm to detect community structures in large-scale networks.
 #'   *Physical Review E, 76(3), 036106.*
 #'
 #' @export
@@ -715,18 +715,18 @@ executeInfoMap <- function(parameters){
 #' print(result$info.communities)
 #' print(result$resulting.partitions)
 executeLabelPropagation <- function(parameters){
-  
+
   cat("\n #-------------------------------------------#")
   cat("\n # LABEL PROPAGATION COMMUNITY DETECTION")
   cat("\n #-------------------------------------------# \n")
-  
+
   lp <- cluster_label_prop(parameters$graph,
-                           weights = parameters$weights)  
-  
+                           weights = parameters$weights)
+
   parameters$community_structure <- lp
   parameters$method <- "LabelPropagation"
   res <- processCommunityDetection(parameters)
-  
+
   return(res)
 }
 
@@ -735,9 +735,9 @@ executeLabelPropagation <- function(parameters){
 # Leading Eigenvector -------------------------------------------------------------
 #' Execute Leading Eigenvector Community Detection
 #'
-#' This function applies the Leading Eigenvector community detection algorithm to a graph, 
-#' calculates modularity, and processes the results, including community membership and hierarchical structure. 
-#' The function also generates and saves the dendrogram, hierarchical partitions, and community structure 
+#' This function applies the Leading Eigenvector community detection algorithm to a graph,
+#' calculates modularity, and processes the results, including community membership and hierarchical structure.
+#' The function also generates and saves the dendrogram, hierarchical partitions, and community structure
 #' in the specified output folder.
 #'
 #' @param parameters A list containing:
@@ -753,13 +753,13 @@ executeLabelPropagation <- function(parameters){
 #'   - `resulting.partitions`: A list containing hierarchical partitioning results.
 #'
 #' @details
-#' The Leading Eigenvector algorithm identifies community structure by maximizing modularity and 
-#' leveraging the eigenvectors of the graph's modularity matrix. Once the algorithm is executed, the results 
-#' are processed by the `processCommunityDetection()` function, which organizes the data, saves results to files, 
+#' The Leading Eigenvector algorithm identifies community structure by maximizing modularity and
+#' leveraging the eigenvectors of the graph's modularity matrix. Once the algorithm is executed, the results
+#' are processed by the `processCommunityDetection()` function, which organizes the data, saves results to files,
 #' and generates visualizations.
 #'
-#' @references 
-#' - Newman, M. E. (2006). Modularity and community structure in networks.  
+#' @references
+#' - Newman, M. E. (2006). Modularity and community structure in networks.
 #'   *Proceedings of the National Academy of Sciences, 103(23), 8577-8582.*
 #'
 #' @export
@@ -777,18 +777,18 @@ executeLabelPropagation <- function(parameters){
 #' print(result$info.communities)
 #' print(result$resulting.partitions)
 executeLeadingEigenVector <- function(parameters){
-  
+
   cat("\n #-------------------------------------------#")
   cat("\n # LEADING EIGENVECTOR COMMUNITY DETECTION")
   cat("\n #-------------------------------------------# \n")
-  
+
   le <- cluster_leading_eigen(parameters$graph,
-                              weights = parameters$weights)  
-  
+                              weights = parameters$weights)
+
   parameters$community_structure <- le
   parameters$method <- "LeadingEigenVector"
   res <- processCommunityDetection(parameters)
-  
+
   return(res)
 }
 
@@ -797,12 +797,12 @@ executeLeadingEigenVector <- function(parameters){
 # Leiden Algorithm -------------------------------------------------------------
 #' Execute Leiden Community Detection Algorithm
 #'
-#' This function applies the Leiden community detection algorithm to a graph, 
-#' calculates modularity, and stores the results, including community membership and hierarchical structure. 
-#' The function also generates and saves the dendrogram, hierarchical partitions, and community structure 
+#' This function applies the Leiden community detection algorithm to a graph,
+#' calculates modularity, and stores the results, including community membership and hierarchical structure.
+#' The function also generates and saves the dendrogram, hierarchical partitions, and community structure
 #' in the specified output folder.
 #'
-#' @param parameters A list containing necessary settings for the function. 
+#' @param parameters A list containing necessary settings for the function.
 #'   - It must include:
 #'     - `graph`: A graph object representing the built graph on which the community detection will be performed.
 #'     - `weights`: A vector of edge weights for the graph (optional).
@@ -816,13 +816,13 @@ executeLeadingEigenVector <- function(parameters){
 #'   - `resulting.partitions`: A list containing hierarchical partitioning results.
 #'
 #' @details
-#' The Leiden algorithm is an improvement on the Louvain method, designed to find communities more efficiently 
-#' and with greater modularity. It works by optimizing the modularity function through local moves and 
+#' The Leiden algorithm is an improvement on the Louvain method, designed to find communities more efficiently
+#' and with greater modularity. It works by optimizing the modularity function through local moves and
 #' improving the clustering quality.
 #'
-#' @references 
-#' - Traag, V. A., Van Dooren, P., & Nesterov, Y. (2019). 
-#'   "Narrow spectral gaps for community detection". 
+#' @references
+#' - Traag, V. A., Van Dooren, P., & Nesterov, Y. (2019).
+#'   "Narrow spectral gaps for community detection".
 #'   *Physical Review E, 80(1), 016114.*
 #'
 #' @export
@@ -840,11 +840,11 @@ executeLeadingEigenVector <- function(parameters){
 #' print(result$info.communities)
 #' print(result$resulting.partitions)
 executeLeiden <- function(parameters){
-  
+
   cat("\n #-------------------------------------------# \n")
   cat("\n # LEIDEN COMMUNITY DETECTION \n")
   cat("\n #-------------------------------------------# \n")
-  
+
   ld <- cluster_leiden(parameters$graph,
                        weights = parameters$weights)
 
@@ -859,12 +859,12 @@ executeLeiden <- function(parameters){
 # Louvain Algorithm -------------------------------------------------------------
 #' Execute Louvain Community Detection Algorithm
 #'
-#' This function applies the Louvain community detection algorithm to a graph, 
-#' calculates modularity, and stores the results, including community membership and hierarchical structure. 
-#' The function also generates and saves the dendrogram, hierarchical partitions, and community structure 
+#' This function applies the Louvain community detection algorithm to a graph,
+#' calculates modularity, and stores the results, including community membership and hierarchical structure.
+#' The function also generates and saves the dendrogram, hierarchical partitions, and community structure
 #' in the specified output folder.
 #'
-#' @param parameters A list containing necessary settings for the function. 
+#' @param parameters A list containing necessary settings for the function.
 #'   It must include:
 #'     - `graph`: A graph object representing the built graph on which the community detection will be performed.
 #'     - `weights`: A vector of edge weights for the graph (optional).
@@ -878,12 +878,12 @@ executeLeiden <- function(parameters){
 #'   - `resulting.partitions`: A list containing hierarchical partitioning results.
 #'
 #' @details
-#' The Louvain method is a widely used and efficient approach for detecting communities in large networks. 
+#' The Louvain method is a widely used and efficient approach for detecting communities in large networks.
 #' It optimizes modularity by grouping nodes into communities and maximizing the modularity measure.
 #'
-#' @references 
-#' - Blondel, V. D., Guillaume, J. L., Lambiotte, R., & Lefebvre, E. (2008). 
-#'   "Fast unfolding of communities in large networks". 
+#' @references
+#' - Blondel, V. D., Guillaume, J. L., Lambiotte, R., & Lefebvre, E. (2008).
+#'   "Fast unfolding of communities in large networks".
 #'   *Journal of Statistical Mechanics: Theory and Experiment, 2008(10), P10008.*
 #'
 #' @export
@@ -901,18 +901,18 @@ executeLeiden <- function(parameters){
 #' print(result$info.communities)
 #' print(result$resulting.partitions)
 executeLouvain <- function(parameters){
-  
+
   cat("\n #-------------------------------------------#")
   cat("\n # LOUVAIN COMMUNITY DETECTION \n")
   cat("\n #-------------------------------------------# \n")
-  
+
   lv <- cluster_louvain(parameters$graph,
                         weights = parameters$weights)
-  
+
   parameters$community_structure <- lv
   parameters$method <- "Louvain"
   res <- processCommunityDetection(parameters)
-  
+
   return(res)
 }
 
@@ -921,12 +921,12 @@ executeLouvain <- function(parameters){
 # Optimal Algorithm -------------------------------------------------------------
 #' Execute Optimal Community Detection Algorithm
 #'
-#' This function applies the Optimal community detection algorithm to a graph, 
-#' calculates modularity, and stores the results, including community membership and hierarchical structure. 
-#' The function also generates and saves the dendrogram, hierarchical partitions, and community structure 
+#' This function applies the Optimal community detection algorithm to a graph,
+#' calculates modularity, and stores the results, including community membership and hierarchical structure.
+#' The function also generates and saves the dendrogram, hierarchical partitions, and community structure
 #' in the specified output folder.
 #'
-#' @param parameters A list of parameters containing necessary settings for the function. 
+#' @param parameters A list of parameters containing necessary settings for the function.
 #'        It must include:
 #'          - `graph`: A graph object representing the built graph on which the community detection will be performed.
 #'          - `weights`: A vector of edge weights for the graph (optional).
@@ -942,7 +942,7 @@ executeLouvain <- function(parameters){
 #' @details
 #' The Optimal algorithm aims to detect communities in networks by optimizing modularity and ensuring efficient results.
 #'
-#' @references 
+#' @references
 #' - Schuetz, M., et al. (2017). "Optimal Community Detection Algorithm."
 #'   *Journal of Complex Networks, 6(4), 537-559.*
 #'
@@ -961,20 +961,20 @@ executeLouvain <- function(parameters){
 #' print(result$info.communities)
 #' print(result$resulting.partitions)
 executeOptimal <- function(parameters){
-  
+
   cat("\n #-------------------------------------------#")
   cat("\n # OPTIMAL COMMUNITY DETECTION ")
   cat("\n #-------------------------------------------# \n")
-  
+
   op = cluster_optimal(parameters$graph,
-                       weights = parameters$weights) 
-  
+                       weights = parameters$weights)
+
   parameters$community_structure = op
   parameters$method = "Optimal"
   res <- processCommunityDetection(parameters)
-  
+
   return(res)
-  gc() 
+  gc()
 }
 
 
@@ -983,12 +983,12 @@ executeOptimal <- function(parameters){
 # Walk Trap Algorithm -------------------------------------------------------------
 #' Execute Walk Trap Community Detection Algorithm
 #'
-#' This function applies the Walk Trap community detection algorithm to a graph, 
-#' calculates modularity, and stores the results, including community membership and hierarchical structure. 
-#' The function also generates and saves the dendrogram, hierarchical partitions, and community structure 
+#' This function applies the Walk Trap community detection algorithm to a graph,
+#' calculates modularity, and stores the results, including community membership and hierarchical structure.
+#' The function also generates and saves the dendrogram, hierarchical partitions, and community structure
 #' in the specified output folder.
 #'
-#' @param parameters A list of parameters containing necessary settings for the function. 
+#' @param parameters A list of parameters containing necessary settings for the function.
 #'        It must include:
 #'          - `graph`: A graph object representing the built graph on which the community detection will be performed.
 #'          - `weights`: A vector of edge weights for the graph (optional).
@@ -1002,10 +1002,10 @@ executeOptimal <- function(parameters){
 #'         - `resulting.partitions`: A list containing hierarchical partitioning results.
 #'
 #' @details
-#' The Walk Trap algorithm detects communities based on random walks and is known for identifying 
+#' The Walk Trap algorithm detects communities based on random walks and is known for identifying
 #' hierarchical community structures.
 #'
-#' @references 
+#' @references
 #' - Pons, P., & Latapy, M. (2006). "Computing communities in large networks using random walks."
 #'   *International Symposium on Computer and Information Sciences*, 284-293.
 #'
@@ -1024,38 +1024,38 @@ executeOptimal <- function(parameters){
 #' print(result$info.communities)
 #' print(result$resulting.partitions)
 executeWalkTrap <- function(parameters){
-  
+
   cat("\n #-------------------------------------------#")
   cat("\n # WALKTRAP COMMUNITY DETECTION")
   cat("\n #-------------------------------------------# \n")
-  
+
   # Apply WalkTrap community detection algorithm
   wt = cluster_walktrap(parameters$graph,
                         weights = parameters$weights,  # Corrected: `parameters$graph` and `parameters$weigths` changed to `parameters$graph` and `parameters$weights`
                         merges = TRUE,
                         modularity = TRUE,
                         membership = TRUE)
-  
+
   parameters$community_structure = wt
   parameters$method = "WalkTrap"
-  
+
   res <- processCommunityDetection(parameters)
-  
+
   return(res)
-  gc() 
+  gc()
 }
 
 
 
 #' Compute k-Nearest Neighbors (kNN) Results
-#' 
+#'
 #' This function processes a set of kNN parameters and executes multiple community detection algorithms on graph data.
 #' It stores runtime and summary results, saving them as CSV files if specified.
-#' 
+#'
 #' @param parameters A list containing necessary parameters including dataset name, folder paths, similarity values, and control flags.
-#' 
+#'
 #' @return A list containing runtime and summary results for different kNN values.
-#' 
+#'
 #' @examples
 #' parameters <- list(knn.values = list(values = c(5, 10, 15)),
 #'                     FolderSplit = "./data",
@@ -1066,61 +1066,81 @@ executeWalkTrap <- function(parameters){
 #'                     similarity = "cosine",
 #'                     Save.Csv.Files = 1)
 #' result <- compute.knn(parameters)
-#' 
+#'
 #' @export
 compute.knn <- function(parameters){
-  
+
   retorno <- list()  # Create a list to store results
   total = length(parameters$knn.values$values)
-  
-  final.runtime = data.frame(
-    user.self = c(0.0),
-    sys.self = c(0.0),
-    elapsed = c(0.0), 
-    user.child = c(0.0), 
-    sys.child = c(0.0),
-    fold = c(0),
-    knn = c(0),
-    method = c("")
+
+  final.runtime <- data.frame(
+    user.self = numeric(),
+    sys.self = numeric(),
+    elapsed = numeric(),
+    user.child = numeric(),
+    sys.child = numeric(),
+    fold = integer(),
+    knn = integer(),
+    method = character()
   )
-  
+
   final.summary <- data.frame(
-    dataset_name = c(""),
-    fold = c(0),
-    knn = c(0),
-    similarity_measure = c(""),
-    connected = c(0)
+    dataset_name = character(),
+    fold = integer(),
+    knn = integer(),
+    similarity_measure = character(),
+    connected = integer()
   )
-  
+
+
+  final.original.comm <- data.frame(split = integer(),
+                                    sparsification = character(),
+                                    method = character(),
+                                    hierarchical = character(),
+                                    type.community = character(),
+                                    labels = character(),
+                                    groups = integer())
+
+  final.info.comm <- data.frame(split = integer(),
+                                sparsification = character(),
+                                method = character(),
+                                hierarchical = character(),
+                                type.community = character(),
+                                numberComm = character(),
+                                modulatiry = integer())
+
+  partitions <- data.frame(labels = character(),
+                           clusters = integer())
+
   i = 1
   while(i <= total){
     cat("\n\n\n#========================================================\n")
     cat("\n KNN: ", parameters$knn.values$values[i], "\n")
     cat("\n#========================================================\n\n\n")
-    
+
     df = createDF()
-    
+
     FolderKnn = paste(parameters$FolderSplit, "/knn-", parameters$knn.values$values[i], sep="")
     if(!dir.exists(FolderKnn)) dir.create(FolderKnn)
     parameters$FolderKnn = FolderKnn
-    
-    name.file = paste(parameters$FolderSplitDF, "/", 
+
+    name.file = paste(parameters$FolderSplitDF, "/",
                       parameters$Dataset.Name, "-knn-", i, ".csv", sep="")
     graph_data <- read.csv(name.file)
-    
+
     sorted_graph <- graph_data[order(-graph_data$similarity), ]
     graph_no_loops <- sorted_graph[-(1:parameters$Dataset.Info$Labels),]
     graph_no_loops[is.na(graph_no_loops)] <- 0
     final_graph <- graph_from_data_frame(graph_no_loops, directed = FALSE)
-    
+
     if(is_connected(final_graph)){
       cat("\n ==>> CONNECTED <<== \n")
-      
+
       parameters$weigths = graph_no_loops$weights
       parameters$graph = final_graph
       parameters$Save = FolderKnn
       parameters$title = paste("knn-", i, sep="")
-      
+
       timeSG = system.time(resSG <- executeSpinGlass(parameters = parameters))
       timeEB = system.time(resEB <- executeEdgeBetweenness(parameters = parameters))
       timeFG = system.time(resFG <- executeFastGreedy(parameters = parameters))
@@ -1131,63 +1151,101 @@ compute.knn <- function(parameters){
       timeLV = system.time(resLV <- executeLouvain(parameters = parameters))
       timeOP = system.time(resOP <- executeOptimal(parameters = parameters))
       timeWT = system.time(resWT <- executeWalkTrap(parameters = parameters))
-      
+
+      knn.original.communities = rbind(resSG$original.communities,
+                                       resEB$original.communities,
+                                       resFG$original.communities,
+                                       resIM$original.communities,
+                                       resLP$original.communities,
+                                       resLE$original.communities,
+                                       resLD$original.communities,
+                                       resLV$original.communities,
+                                       resOP$original.communities,
+                                       resWT$original.communities)
+
+      final.original.comm = rbind(final.original.comm, knn.original.communities)
+
+      knn.info.communities = rbind(resSG$info.communities, resEB$info.communities,
+                                   resFG$info.communities, resIM$info.communities,
+                                   resLP$info.communities, resLE$info.communities,
+                                   resLD$info.communities, resLV$info.communities,
+                                   resOP$info.communities, resWT$info.communities)
+
+      final.info.comm = rbind(final.info.comm, knn.info.communities)
+
       runtime_communities = rbind(timeSG, timeEB, timeFG, timeIM, timeLP, timeLE, timeLD, timeLV, timeOP, timeWT)
       new_runtime = data.frame(runtime_communities, fold = parameters$fold, knn = i, method = rownames(runtime_communities))
       final.runtime = rbind(final.runtime, new_runtime)
-      
+
       summary = parameters$knn.summary
-      data = data.frame(dataset_name = parameters$Dataset.Name, 
+      data = data.frame(dataset_name = parameters$Dataset.Name,
                         fold = parameters$fold,
                         knn = parameters$knn.values$values[i],
                         similarity_measure = parameters$similarity,
                         connected = 1)
       summary <- rbind(summary, data)
       final.summary = rbind(final.summary, summary)
-      
+
       if(parameters$Save.Csv.Files == 1){
         write.csv(runtime_communities, paste(parameters$FolderKnn, "/knn-", i, "-runtime.csv", sep = ""), row.names = FALSE)
         write.csv(summary, paste(parameters$FolderKnn, "/knn-", i, "-summary.csv", sep = ""), row.names = FALSE)
+        write.csv(knn.info.communities, paste(parameters$FolderKnn, "/knn-", i, "-info-communities.csv", sep = ""), row.names = FALSE)
       }
-      
-      retorno[[paste0("knn", i)]] <- list(Runtime = runtime_communities, Summary = summary)
+
+      retorno[[paste0("knn", i)]] <- list(Runtime = runtime_communities,
+                                          Summary = summary,
+                                          Info.Communities = knn.info.communities,
+                                          Original.communities = knn.original.communities,
+                                          SpinGlass = resSG,
+                                          EdgeBetweenness = resEB,
+                                          FastGreedy = resFG,
+                                          InfoMap = resIM,
+                                          LabelPropagation = resLP,
+                                          LeadingEigenVector = resLE,
+                                          Leading = resLD,
+                                          Louvain = resLV,
+                                          Optimal = resOP,
+                                          WalkTrap = resWT)
+
     } else {
       cat("\n===========>>>> NOT CONNECTED")
-      
-      data = data.frame(dataset_name = parameters$Dataset.Name, 
+
+      data = data.frame(dataset_name = parameters$Dataset.Name,
                         fold = parameters$fold,
                         knn = parameters$knn.values$values[i],
                         similarity_measure = parameters$similarity,
                         connected = 0)
       final.summary = rbind(final.summary, data)
-      
+
       if(parameters$Save.Csv.Files == 1){
         write.csv(final.summary, paste(parameters$FolderKnn, "/knn-", i, "-summary.csv", sep = ""), row.names = FALSE)
       }
-      
+
       retorno[[paste0("knn", i)]] <- list(Summary = final.summary)
     }
-    
+
     i = i + 1
     gc()
   }
-  
+
   retorno$Runtime.all.Knn = final.runtime[-1,]
   retorno$Summary.all.Knn = final.summary[-1,]
-  
+  retorno$Original.Communities.all.Trh = final.original.comm
+  retorno$Info.Communities.all.Trh = final.info.comm
+
   return(retorno)
 }
 
 
 #' Compute Training Results
-#' 
+#'
 #' This function processes a set of training parameters and executes multiple community detection algorithms on graph data.
 #' It stores the runtime and summary of results, saving them as CSV files if specified.
-#' 
+#'
 #' @param parameters A list containing necessary parameters including dataset name, folder paths, similarity values, and control flags.
-#' 
+#'
 #' @return A list containing runtime and summary results for different training values.
-#' 
+#'
 #' @examples
 #' parameters <- list(tr.values = list(values = c(0.1, 0.2, 0.3)),
 #'                     FolderSplit = "./data",
@@ -1198,65 +1256,84 @@ compute.knn <- function(parameters){
 #'                     similarity = "cosine",
 #'                     Save.Csv.Files = 1)
 #' result <- compute.tr(parameters)
-#' 
+#'
 #' @export
 compute.tr <- function(parameters){
-  
+
   retorno <- list()  # Create a list to store results
   total = length(parameters$tr.values$values)
-  
-  final.runtime = data.frame(
-    user.self = c(0.0),
-    sys.self = c(0.0),
-    elapsed = c(0.0), 
-    user.child = c(0.0), 
-    sys.child = c(0.0),
-    fold = c(0),
-    tr = c(0),
-    method = c("")
+
+  final.runtime <- data.frame(
+    user.self = numeric(),
+    sys.self = numeric(),
+    elapsed = numeric(),
+    user.child = numeric(),
+    sys.child = numeric(),
+    fold = integer(),
+    knn = integer(),
+    method = character()
   )
-  
+
   final.summary <- data.frame(
-    dataset_name = c(""),
-    fold = c(0),
-    trh = c(0),
-    similarity_measure = c(""),
-    connected = c(0)
+    dataset_name = character(),
+    fold = integer(),
+    trh = integer(),
+    similarity_measure = character(),
+    connected = integer()
   )
-  
+
+  final.original.comm <- data.frame(split = integer(),
+                                     sparsification = character(),
+                                     method = character(),
+                                     hierarchical = character(),
+                                     type.community = character(),
+                                     labels = character(),
+                                     groups = integer())
+
+  final.info.comm <- data.frame(split = integer(),
+                                sparsification = character(),
+                                method = character(),
+                                hierarchical = character(),
+                                type.community = character(),
+                                numberComm = character(),
+                                modulatiry = integer())
+
+  partitions <- data.frame(labels = character(),
+                           clusters = integer())
+
   j = 0
   a = 1
   while(j < total){
-    
+
     cat("\n\n\n#========================================================\n")
     cat("\n TR: ", parameters$tr.values$values[a], "\n")
     cat("\n#========================================================\n\n\n")
-    
+
     df = createDF()
-    
+
     FolderTr = paste(parameters$FolderSplit, "/tr-", j, sep="")
     if(!dir.exists(FolderTr)) dir.create(FolderTr)
     parameters$FolderTr = FolderTr
-    
-    name.file = paste(parameters$FolderSplitDF, "/", 
-                      parameters$Dataset.Name, 
+
+    name.file = paste(parameters$FolderSplitDF, "/",
+                      parameters$Dataset.Name,
                       "-threshold-", j, ".csv", sep="")
     graph_data <- read.csv(name.file)
-    
+
     sorted_graph <- graph_data[order(-graph_data$similarity), ]
     graph_no_loops <- sorted_graph[-(1:parameters$Dataset.Info$Labels),]
     graph_no_loops[is.na(graph_no_loops)] <- 0
     final_graph <- graph_from_data_frame(graph_no_loops, directed = FALSE)
-    
+
     if(is_connected(final_graph)==TRUE){
-      
+
       cat("\n ==>> CONNECTED <<== \n")
-      
+
       parameters$weigths = graph_no_loops$weights
       parameters$graph = final_graph
       parameters$Save = FolderTr
       parameters$title = paste("tr-", j, sep="")
-      
+
       timeSG = system.time(resSG <- executeSpinGlass(parameters))
       timeEB = system.time(resEB <- executeEdgeBetweenness(parameters))
       timeFG = system.time(resFG <- executeFastGreedy(parameters))
@@ -1267,54 +1344,111 @@ compute.tr <- function(parameters){
       timeLV = system.time(resLV <- executeLouvain(parameters))
       timeOP = system.time(resOP <- executeOptimal(parameters))
       timeWT = system.time(resWT <- executeWalkTrap(parameters))
-      
-      runtime_communities = rbind(timeSG, timeEB, timeFG, timeIM, timeLP, timeLE, timeLD, timeLV, timeOP, timeWT)
-      new_runtime = data.frame(runtime_communities, fold = parameters$fold, tr = j, method = rownames(runtime_communities))
+
+      # salvando resultados
+      tr.original.communities = rbind(resSG$original.communities,
+                                      resEB$original.communities,
+                                      resFG$original.communities,
+                                      resIM$original.communities,
+                                      resLP$original.communities,
+                                      resLE$original.communities,
+                                      resLD$original.communities,
+                                      resLV$original.communities,
+                                      resOP$original.communities,
+                                      resWT$original.communities)
+
+      final.original.comm = rbind(final.original.comm, tr.original.communities)
+
+      # salvando informações das comunidades
+      tr.info.communities = rbind(resSG$info.communities,
+                                  resEB$info.communities,
+                                  resFG$info.communities,
+                                  resIM$info.communities,
+                                  resLP$info.communities,
+                                  resLE$info.communities,
+                                  resLD$info.communities,
+                                  resLV$info.communities,
+                                  resOP$info.communities,
+                                  resWT$info.communities)
+
+      final.info.comm = rbind(final.info.comm, tr.info.communities)
+
+      # tr.partitions = rbind(resSG$resulting.partitions,
+      #                       resEB$info.communities,
+      #                       resFG$info.communities,
+      #                       resIM$info.communities,
+      #                       resLP$info.communities,
+      #                       resLE$info.communities,
+      #                       resLD$info.communities,
+      #                       resLV$info.communities,
+      #                       resOP$info.communities,
+      #                       resWT$info.communities)
+
+
+      runtime_communities = rbind(timeSG, timeEB, timeFG, timeIM,
+                                  timeLP, timeLE, timeLD, timeLV, timeOP, timeWT)
+      new_runtime = data.frame(runtime_communities,
+                               fold = parameters$fold, tr = j,
+                               method = rownames(runtime_communities))
       final.runtime = rbind(final.runtime, new_runtime)
-      
+
       summary = parameters$tr.summary
-      data = data.frame(dataset_name = parameters$Dataset.Name, 
+      data = data.frame(dataset_name = parameters$Dataset.Name,
                         fold = parameters$fold,
                         trh = parameters$tr.values$values[a],
                         similarity_measure = parameters$similarity,
                         connected = 1)
       summary <- rbind(summary, data)
       final.summary = rbind(final.summary, summary)
-      
+
       if(parameters$Save.Csv.Files == 1){
         write.csv(runtime_communities, paste(parameters$FolderTr, "/tr-", j, "-runtime.csv", sep = ""), row.names = FALSE)
         write.csv(summary, paste(parameters$FolderTr, "/tr-", j, "-summary.csv", sep = ""), row.names = FALSE)
       }
-      
-      retorno[[paste0("tr", j)]] <- list(Runtime = runtime_communities, Summary = summary)
-      
-      
+
+      retorno[[paste0("tr", j)]] <- list(Runtime = runtime_communities,
+                                         Summary = summary,
+                                         Info.Communities = tr.info.communities,
+                                         Original.communities = tr.original.communities,
+                                         SpinGlass = resSG,
+                                         EdgeBetweenness = resEB,
+                                         FastGreedy = resFG,
+                                         InfoMap = resIM,
+                                         LabelPropagation = resLP,
+                                         LeadingEigenVector = resLE,
+                                         Leading = resLD,
+                                         Louvain = resLV,
+                                         Optimal = resOP,
+                                         WalkTrap = resWT)
+
+
     } else {
       cat("\n===========>>>> NOT CONNECTED")
-      
-      data = data.frame(dataset_name = parameters$Dataset.Name, 
+
+      data = data.frame(dataset_name = parameters$Dataset.Name,
                         fold = parameters$fold,
                         trh = parameters$tr.values$values[a],
                         similarity_measure = parameters$similarity,
                         connected = 0)
       final.summary = rbind(final.summary, data)
-      
+
       if(parameters$Save.Csv.Files == 1){
         write.csv(final.summary, paste(parameters$FolderTr, "/tr-", j, "-summary.csv", sep = ""), row.names = FALSE)
       }
-      
+
       retorno[[paste0("tr", j)]] <- list(Summary = final.summary)
     }
-    
+
     a = a + 1
     j = j + 1
   }
-  
+
   retorno$Runtime.all.Trh = final.runtime[-1,]
   retorno$Summary.all.Trh = final.summary[-1,]
-  
+  retorno$Original.Communities.all.Trh = final.original.comm
+  retorno$Info.Communities.all.Trh = final.info.comm
+
   return(retorno)
 }
 
 
-  

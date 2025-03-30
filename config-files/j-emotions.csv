@@ -1,7 +1,7 @@
 Config, Value
-Dataset_Path, ~/Generate-Partitions-Communities/dataset
+Dataset_Path, ~/GeneratePartitionsCommunities/dataset
 Temporary_Path, /tmp/j-emotions
-Graph_Path, ~/Generate-Partitions-Communities/Label-Graphs
+Graph_Path, ~/GeneratePartitionsCommunities/Label-Graphs
 Similarity, jaccard
 Sparsification, 1
 Dataset_Name, emotions

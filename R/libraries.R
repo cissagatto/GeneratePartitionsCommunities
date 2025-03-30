@@ -1,41 +1,41 @@
 #' Generate Partitions Communities
-#' 
-#' This script sets up the environment for generating partition communities by 
-#' installing and loading necessary R packages. It ensures that required packages 
+#'
+#' This script sets up the environment for generating partition communities by
+#' installing and loading necessary R packages. It ensures that required packages
 #' are installed before use.
-#' 
-#' @details 
-#' The script defines the root folder for storing scripts and data, 
-#' installs missing packages from a predefined list, and loads the required 
-#' libraries. The packages used include `igraph`, `dplyr`, `tidyr`, `stringr`, 
-#' `parallel`, and `doParallel`, which are essential for graph-based community 
+#'
+#' @details
+#' The script defines the root folder for storing scripts and data,
+#' installs missing packages from a predefined list, and loads the required
+#' libraries. The packages used include `igraph`, `dplyr`, `tidyr`, `stringr`,
+#' `parallel`, and `doParallel`, which are essential for graph-based community
 #' detection and parallel computing.
-#' 
-#' @author 
-#' PhD Elaine Cecilia Gatto  
-#' Federal University of Lavras (UFLA), Applied Computer Department (DAC)  
-#' 
-#' PhD Ricardo Cerri  
+#'
+#' @author
+#' PhD Elaine Cecilia Gatto
+#' Federal University of Lavras (UFLA), Applied Computer Department (DAC)
+#'
+#' PhD Ricardo Cerri
 #' State University os São Paulo
-#' 
-#' PhD Mauri Ferrandin  
+#'
+#' PhD Mauri Ferrandin
 #' Federal University of Santa Catarina
-#' 
-#' PhD Alan Demetrius  
-#' Federal University of Sao Carlos (UFSCar), Computer Department (DC)  
-#' 
-#' @note 
+#'
+#' PhD Alan Demetrius
+#' Federal University of Sao Carlos (UFSCar), Computer Department (DC)
+#'
+#' @note
 #' Any errors, please contact: elainececiliagatto@gmail.com
-#' 
-#' @examples 
+#'
+#' @examples
 #' # Running the script ensures required packages are installed and loaded
-#' 
-#' @seealso 
+#'
+#' @seealso
 #' \code{install.packages}, \code{library}, \code{require}
-#' 
+#'
 # Define root directories
-FolderRoot <- "~/Generate-Partitions-Communities"
-FolderScripts <- "~/Generate-Partitions-Communities/R"
+FolderRoot <- "~/GeneratePartitionsCommunities"
+FolderScripts <- "~/GeneratePartitionsCommunities/R"
 
 # List of required packages
 required_packages <- c("igraph", "dplyr",
@@ -43,7 +43,7 @@ required_packages <- c("igraph", "dplyr",
                        "parallel", "doParallel")
 
 #' Install missing packages and load them
-#' 
+#'
 #' @param pkg Character string with the package name.
 #' @return Loads the package after installation.
 #' @examples

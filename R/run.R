@@ -16,15 +16,15 @@
 # Federal University of Lavras (UFLA) Campus Lavras - Minas Gerais            #
 # Applied Computer Department (DAC)                                           #
 #                                                                             #
-# Prof. Dr. Ricardo Cerri         
+# Prof. Dr. Ricardo Cerri
 # State University of São Paulo Campus São Carlos
 #                                                                             #
-# Prof. Dr. Mauri Ferrandin 
+# Prof. Dr. Mauri Ferrandin
 # Federal University of Santa Catarina Campus Blumenau
 #                                                                             #
 # Prof. Dr. Alan Demetrius                                                    #
 # Federal University of Sao Carlos (UFSCar) Campus Sao Carlos - São Paulo     #
-# Computer Department (DC)                                                    # 
+# Computer Department (DC)                                                    #
 #
 ###############################################################################
 
@@ -32,46 +32,48 @@
 ##################################################################################################
 # Configures the workspace according to the operating system                                     #
 ##################################################################################################
-FolderRoot = "~/Generate-Partitions-Communities"
-FolderScripts = "~/Generate-Partitions-Communities/R"
+FolderRoot = "~/GeneratePartitionsCommunities"
+FolderScripts = "~/GeneratePartitionsCommunities/R"
 
 
 #################################################################
 # MAIN FUNCTIOn
 #################################################################
 execute.run <- function(parameters) {
-  
-  FolderRoot = "~/Generate-Partitions-Communities"
-  FolderScripts = "~/Generate-Partitions-Communities/R"
-  
+
+  FolderRoot = "~/GeneratePartitionsCommunities"
+  FolderScripts = "~/GeneratePartitionsCommunities/R"
+
   setwd(FolderScripts)
   source("libraries.R")
-  
-  setwd(FolderScripts)
+
+  #setwd(FolderScripts)
   source("utils.R")
-  
-  setwd(FolderScripts)
+
+  #setwd(FolderScripts)
   source("communities.R")
-  
-  setwd(FolderScripts)
+
+  #setwd(FolderScripts)
   source("functions.R")
-  
-  setwd(FolderScripts)
+
+  #setwd(FolderScripts)
   source("choose.R")
-  
+
+  #rm(FolderScripts)
+
   retorno = list()
-  
+
   if (parameters$Number.Cores  == 0) {
     cat("\n\n##################################################################################################")
     cat(  "\n# Zero is a disallowed value for number_cores. Please choose a value greater than or equal to 1. #")
     cat("\n##################################################################################################\n\n")
-    
+
   } else {
-    
+
     cl <- parallel::makeCluster(parameters$Number.Cores)
     doParallel::registerDoParallel(cl)
     print(cl)
-    
+
     if (parameters$Number.Cores == 1) {
       cat("\n\n###########################################################")
       cat("\n# RUN: Running Sequentially!                              #")
@@ -88,10 +90,10 @@ execute.run <- function(parameters) {
       )
     }
   }
-  
+
   if(parameters$sparsification == 0){
-    
-    
+
+
     cat("\n\n########################################################")
     cat("  \n# Run: Comunidades                                     #")
     cat("  \n########################################################\n\n")
@@ -100,42 +102,43 @@ execute.run <- function(parameters) {
     # res.comm$Runtime
     # res.comm$Summary
     # res.comm$SpinGlass$FOLD1
-    
-    
+
+
   } else {
-    
+
     cat("\n\n########################################################")
     cat("  \n# Run: sparsification                                  #")
     cat("  \n########################################################\n\n")
     # debug(execute.communities)
     timeSpars = system.time(res.spars <- execute.communities(parameters))
-    
-    # res.spars$knn$FOLD1$knn1
-    # res.spars$tr$FOLD1
     retorno$sparsification = res.spars
-    
-    
-    #cat("\n\n#########################################################")
-    #cat("\n# Run: Choose Hierarchical                                #")
-    #timeChooseH = system.time(res2 <- chooseHierarchical(parameters))
-    
-    #cat("\n\n###################################################")
-    #cat("\n# Run: Choose Non Hierarchical                             #")
-    #timeChooseNH = system.time(res3 <- chooseNonHierarchical(parameters))
-    
-    #cat("\n\n########################################################")
-    #cat("\n# Run: Organizing results                                 #")
-    #timeJunta = system.time(res4 <- juntaDFs(parameters))
-    
+
+    #res.spars$knn$FOLD1$Info.Communities.all.Trh
+    #res.spars$tr$FOLD1$Info.Communities.all.Trh
+
+
+
+    cat("\n\n#########################################################")
+    cat("\n# Run: Choose Hierarchical                                #")
+    timeChooseH = system.time(res2 <- chooseHierarchical(parameters, retorno))
+
+    cat("\n\n###################################################")
+    cat("\n# Run: Choose Non Hierarchical                             #")
+    timeChooseNH = system.time(res3 <- chooseNonHierarchical(parameters, retorno))
+
+    cat("\n\n########################################################")
+    cat("\n# Run: Organizing results                                 #")
+    timeJunta = system.time(res4 <- juntaDFs(parameters))
+
     return(retorno)
   }
-  
+
   cat("\n######################################################################")
   cat("\n# END RUN.R                                                          #")
   cat("\n######################################################################")
   cat("\n\n\n\n")
-  
-  
+
+
 } # fim da função
 
 

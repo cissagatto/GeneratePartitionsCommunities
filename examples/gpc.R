@@ -22,25 +22,25 @@ cat(  "\n###################################################\n\n")
 # Federal University of Lavras (UFLA) Campus Lavras - Minas Gerais            #
 # Applied Computer Department (DAC)                                           #
 #                                                                             #
-# Prof. Dr. Ricardo Cerri         
+# Prof. Dr. Ricardo Cerri
 # State University of São Paulo Campus São Carlos
 #                                                                             #
-# Prof. Dr. Mauri Ferrandin 
+# Prof. Dr. Mauri Ferrandin
 # Federal University of Santa Catarina Campus Blumenau
 #                                                                             #
 # Prof. Dr. Alan Demetrius                                                    #
 # Federal University of Sao Carlos (UFSCar) Campus Sao Carlos - São Paulo     #
-# Computer Department (DC)                                                    # 
+# Computer Department (DC)                                                    #
 #
 ###############################################################################
 
 
 #' @title Generate Partitions Communities
 #' @description This script is responsible for generating partitioned communities using various algorithms.
-#' It sets up the environment, loads necessary datasets, processes configurations, and executes the community 
+#' It sets up the environment, loads necessary datasets, processes configurations, and executes the community
 #' detection pipeline.
-#' 
-#' @details 
+#'
+#' @details
 #' The script follows these steps:
 #' 1. Sets the working directory and loads necessary libraries.
 #' 2. Reads datasets and configuration files.
@@ -49,7 +49,7 @@ cat(  "\n###################################################\n\n")
 #' 5. Saves runtime and cleans up temporary files.
 #' 6. Stores results locally or in the cloud.
 #'
-#' @author 
+#' @author
 #' - Profa. Dra. Elaine Cecilia Gatto (UFLA)
 #' - Prof. Dr. Ricardo Cerri (USP)
 #' - Prof. Dr. Mauri Ferrandin (UFSC)
@@ -58,8 +58,8 @@ cat(  "\n###################################################\n\n")
 #' @copyright 2025
 #' @license GNU General Public License v3.0
 #' @seealso \code{\link{execute.run}}, \code{\link{save_runtime}}, \code{\link{clean_up}}
-#' 
-#' @examples 
+#'
+#' @examples
 #' # Run the script:
 #' source("generate_partitions_communities.R")
 #'
@@ -70,8 +70,8 @@ cat("\n\n#######################################################")
 cat("\n# BDFG: SET WORK SPACE                                #")
 cat("\n#######################################################\n\n")
 
-FolderRoot = "~/Generate-Partitions-Communities"
-FolderScripts = "~/Generate-Partitions-Communities/R"
+FolderRoot = "~/GeneratePartitionsCommunities"
+FolderScripts = "~/GeneratePartitionsCommunities/R"
 
 setwd(FolderScripts)  # Set working directory to script folder
 source("libraries.R") # Load required libraries
@@ -102,8 +102,9 @@ args <- commandArgs(TRUE)
 
 # Read configuration file
 config_file <- args[1]
-# home/cissagatto/Generate-Partitions-Communities/config-files/
-# config_file = "~/Generate-Partitions-Communities/config-files/j-emotions.csv"
+
+# home/cissagatto/GeneratePartitionsCommunities/config-files/
+config_file = "~/GeneratePartitionsCommunities/config-files/j-emotions.csv"
 parameters <- read_config_file(config_file, datasets)
 
 # Ensure the results folder exists
@@ -152,7 +153,7 @@ cat("\n\n###################################################################")
 cat("\n# GPC: SAVE TO APPROPRIATE LOCATION (CLOUD OR MACHINE)          #")
 cat("\n##################################################################\n\n")
 if(parameters$Save.Csv.Files==1){
-  save_locally(parameters)  
+  save_locally(parameters)
 }
 
 
