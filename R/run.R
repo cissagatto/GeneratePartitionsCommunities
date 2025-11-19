@@ -116,8 +116,6 @@ execute.run <- function(parameters) {
     #res.spars$knn$FOLD1$Info.Communities.all.Trh
     #res.spars$tr$FOLD1$Info.Communities.all.Trh
 
-
-
     cat("\n\n#########################################################")
     cat("\n# Run: Choose Hierarchical                                #")
     timeChooseH = system.time(res2 <- chooseHierarchical(parameters, retorno))
